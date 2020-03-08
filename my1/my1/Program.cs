@@ -14,7 +14,7 @@ namespace my1
             var client = new HttpClient();
             var result = await client.GetAsync(url);
 
-            if (result.IsSuccessStatusCode) //kod 2xx
+            if (result.IsSuccessStatusCode) 
             {
                 var html = await result.Content.ReadAsStringAsync();
                 var regex = new Regex("[a-z]+[a-z0-9]*@[a-z0-9]+\\.[a-z]+",
