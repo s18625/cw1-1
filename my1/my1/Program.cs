@@ -7,28 +7,26 @@ namespace my1
 {
     public class Program
     {
-       
-        public static async Task Main(string[] args)
+
+        static async Task Main(string[] args)
         {
-            var pattern = @"^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$";
-            var webPage = args[0];
+            var url = args.Length > 0 ? args[0] : "https://www.pja.edu.pl";
+            var client = new HttpClient();
+            var result = await client.GetAsync(url);
 
-            var httpClient = new HttpClient();
-            var response = await httpClient.GetAsync(webPage);
-            var content = response.Content;
-            var result = await content.ReadAsStringAsync();
-
-            var regex = new Regex(pattern);
-            foreach (var word in result.Split(' '))
+            if (result.IsSuccessStatusCode) //kod 2xx
             {
-                var match = regex.Match(word);
-                if (match.Success)
+                var html = await result.Content.ReadAsStringAsync();
+                var regex = new Regex("[a-z]+[a-z0-9]*@[a-z0-9]+\\.[a-z]+",
+                    RegexOptions.IgnoreCase);
+                var matches = regex.Matches(html);
+
+                foreach (var m in matches)
                 {
-                    Console.WriteLine(word);
+                    Console.WriteLine(m.ToString());
                 }
+
             }
         }
     }
 }
-
-
